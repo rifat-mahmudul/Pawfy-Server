@@ -48,6 +48,8 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
 
+        const userCollection = client.db('Pawfy').collection('users')
+
         //create jwt token for uer
         app.post('/jwt',(req, res) => {
             const user = req.body;
@@ -71,6 +73,21 @@ async function run() {
                 maxAge : 0
             })
             .send({result : true});
+        })
+
+        //save user data in DB
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            const query = {email : user?.email};
+            const isExist = await userCollection.findOne(query);
+
+            if(isExist) return res.status(401).send({message : 'User Already Save In Database'})
+            
+            const result = await userCollection.insertOne({
+                ...user,
+                Timestamp : Date.now()
+            });
+            res.send(result);
         })
 
         // Send a ping to confirm a successful connection
