@@ -1,12 +1,17 @@
 const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion } = require('mongodb');
+const jwt = require('jsonwebtoken')
 require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 5000;
 
 //middleware
-app.use(cors());
+app.use(cors({
+    origin : ['http://localhost:5173'],
+    credentials : true,
+    optionsSuccessStatus : 200
+}));
 app.use(express.json());
 
 const DB_USER = process.env.DB_USER;
@@ -26,6 +31,18 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
 
+        //create jwt token for uer
+        app.post('/jwt',(req, res) => {
+            const user = req.body;
+            const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn : '1d'});
+            res
+            .cookie('token', token, {
+                httpOnly : true,
+                secure : process.env.NODE_ENV = 'production' ? true : false,
+                sameSite : process.env.NODE_ENV = 'production' ? 'none' : 'strict'
+            })
+            .send({result : true})
+        })
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
@@ -35,7 +52,7 @@ async function run() {
         // await client.close();
     }
 }
-// run().catch(console.dir);
+run().catch(console.dir);
 
 app.get('/', (req, res) => {
     res.send('SERVER IS RUNNING...')
