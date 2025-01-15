@@ -1,7 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 5000;
@@ -13,6 +14,22 @@ app.use(cors({
     optionsSuccessStatus : 200
 }));
 app.use(express.json());
+app.use(cookieParser());
+
+//verify token
+const verifyToken = (req, res, next) => {
+    const token = req.cookie.token;
+    if(!token) return res.status(401).send({message : 'Unauthorized Access'});
+    if(token){
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+            if(err) {
+                return res.status(401).send({message : 'Unauthorized Access'});
+            }
+            req.user = decoded;
+            next();
+        })
+    }
+}
 
 const DB_USER = process.env.DB_USER;
 const DB_PASS = process.env.DB_PASS;
