@@ -44,6 +44,18 @@ async function run() {
             .send({result : true})
         })
 
+        //clear jwt token when log out
+        app.get('/logout', (req, res) => {
+            res
+            .clearCookie('token', {
+                httpOnly : true,
+                secure : process.env.NODE_ENV = 'production' ? true : false,
+                sameSite : process.env.NODE_ENV = 'production' ? 'none' : 'strict',
+                maxAge : 0
+            })
+            .send({result : true});
+        })
+
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
