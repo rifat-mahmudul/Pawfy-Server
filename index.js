@@ -49,7 +49,8 @@ async function run() {
     try {
 
         const userCollection = client.db('Pawfy').collection('users');
-        const petsCollection = client.db('Pawfy').collection('pets')
+        const petsCollection = client.db('Pawfy').collection('pets');
+        const donateCampaignCollection = client.db('Pawfy').collection('donationCampaign')
 
         //create jwt token for uer
         app.post('/jwt',(req, res) => {
@@ -108,6 +109,18 @@ async function run() {
             } catch (error) {
                 console.log(`error from post pet data ${error}`);
                 res.status(500).send({message : `error from post pet data ${error}`})
+            }
+        })
+
+        //create donatio on DB
+        app.post('/donation', verifyToken, async(req, res) => {
+            try {
+                const donateData = req.body;
+                const result = await donateCampaignCollection.insertOne(donateData);
+                res.send(result);
+            } catch (error) {
+                console.log(`error from create donate data ${error}`);
+                res.status(500).send({message : `error from create donate data ${error}`})
             }
         })
 
