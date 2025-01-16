@@ -107,8 +107,21 @@ async function run() {
                 const result = await petsCollection.insertOne(petData);
                 res.send(result);
             } catch (error) {
-                console.log(`error from post pet data ${error}`);
-                res.status(500).send({message : `error from post pet data ${error}`})
+                console.log(`error from post pet data : ${error}`);
+                res.status(500).send({message : `error from post pet data : ${error}`})
+            }
+        })
+
+        //get pets for specific user by email 
+        app.get('/pets/:email', async(req, res) => {
+            try {
+                const email = req.params.email;
+                const query = {userEmail : email};
+                const result = await petsCollection.find(query).toArray();
+                res.send(result)
+            } catch (error) {
+                console.log(`error from get pets for specific user by email : ${error}`);
+                res.status(500).send(`error from get pets for specific user by email : ${error}`)
             }
         })
 
