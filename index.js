@@ -18,7 +18,7 @@ app.use(cookieParser());
 
 //verify token
 const verifyToken = (req, res, next) => {
-    const token = req.cookie.token;
+    const token = req.cookies.token;
     if(!token) return res.status(401).send({message : 'Unauthorized Access'});
     if(token){
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
@@ -48,7 +48,8 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
 
-        const userCollection = client.db('Pawfy').collection('users')
+        const userCollection = client.db('Pawfy').collection('users');
+        const petsCollection = client.db('Pawfy').collection('pets')
 
         //create jwt token for uer
         app.post('/jwt',(req, res) => {
@@ -96,6 +97,18 @@ async function run() {
             const query = {email : email};
             const result = await userCollection.findOne(query);
             res.send(result);
+        })
+
+        //post pet on DB
+        app.post('/pets', verifyToken, async(req, res) => {
+            try {
+                const petData = req.body;
+                const result = await petsCollection.insertOne(petData);
+                res.send(result);
+            } catch (error) {
+                console.log(`error from post pet data ${error}`);
+                res.status(500).send({message : `error from post pet data ${error}`})
+            }
         })
 
         // Send a ping to confirm a successful connection
