@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
@@ -113,15 +113,28 @@ async function run() {
         })
 
         //get pets for specific user by email 
-        app.get('/pets/:email', async(req, res) => {
+        app.get('/pets/:email', verifyToken, async(req, res) => {
             try {
                 const email = req.params.email;
                 const query = {userEmail : email};
-                const result = await petsCollection.find(query).toArray();
+                const result = (await petsCollection.find(query).sort({'date' : -1}).toArray());
                 res.send(result)
             } catch (error) {
                 console.log(`error from get pets for specific user by email : ${error}`);
                 res.status(500).send(`error from get pets for specific user by email : ${error}`)
+            }
+        })
+
+        //delete pet by id
+        app.delete('/pet/:id', async(req, res) => {
+            try {
+                const id = req.params.id;
+                const query = {_id : new ObjectId(id)};
+                const result = await petsCollection.deleteOne(query);
+                res.send(result);
+            } catch (error) {
+                console.log(`error from delete pet : ${error}`);
+                res.status(500).send(`error from delete pet : ${error}`)
             }
         })
 
