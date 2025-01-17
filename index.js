@@ -138,6 +138,25 @@ async function run() {
             }
         })
 
+        //update pet data
+        app.patch('/pet/:id', verifyToken, async(req, res) => {
+            const petData = req.body;
+            const id = req.params.id;
+            const query = {_id : new ObjectId(id)};
+            const updateDoc = {
+                $set : {
+                    ...petData,
+                }
+            }
+            try {
+                const result = await petsCollection.updateOne(query, updateDoc);
+                res.send(result);
+            } catch (error) {
+                console.log(error);
+                res.status(500).send({error : `An error occurred while update pet data : ${error}`})
+            }
+        })
+
         //delete pet by id
         app.delete('/pet/:id', async(req, res) => {
             try {
