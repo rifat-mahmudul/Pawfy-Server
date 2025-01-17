@@ -125,6 +125,19 @@ async function run() {
             }
         })
 
+        //get single pet by id
+        app.get('/pet/:id', async(req, res) => {
+            try {
+                const id = req.params.id;
+                const query = {_id : new ObjectId(id)};
+                const result = await petsCollection.findOne(query);
+                res.send(result);
+            } catch (error) {
+                console.log(`error from get single pet by id : ${error}`);
+                res.status(500).send(`error from get single pet by id : ${error}`)
+            }
+        })
+
         //delete pet by id
         app.delete('/pet/:id', async(req, res) => {
             try {
