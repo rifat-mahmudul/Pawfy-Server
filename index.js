@@ -217,7 +217,7 @@ async function run() {
         })
 
         //request adopt data
-        app.post('/adopt-request', async(req, res) => {
+        app.post('/adopt-request', verifyToken, async(req, res) => {
             try {
                 const adoptData = req.body;
                 const result = await adoptCollection.insertOne(adoptData);
@@ -229,7 +229,7 @@ async function run() {
         })
 
         //get specific adopt request data by user email
-        app.get('/adopt-request/:email', async(req, res) => {
+        app.get('/adopt-request/:email', verifyToken, async(req, res) => {
             try {
                 const email = req.params.email;
                 const query = {petOwner : email};
@@ -238,6 +238,26 @@ async function run() {
             } catch (error) {
                 console.log(`error from get specific adopt request data by user email : ${error}`);
                 res.status(500).send(`error from get specific adopt request data by user email : ${error}`)
+            }
+        })
+
+        //update adopt request data 
+        app.patch('/adopt-request/:id', verifyToken, async(req, res) => {
+            try {
+                const adoptData = req.body;
+                const id = req.params.id;
+                const query = {_id : new ObjectId(id)};
+
+                const updateDoc = {
+                    $set : {
+                        ...adoptData
+                    }
+                }
+                const result = await adoptCollection.updateOne(query, updateDoc);
+                res.send(result);
+            } catch (error) {
+                console.log(`error from update adopt request data  : ${error}`);
+                res.status(500).send(`error from update adopt request data  : ${error}`)
             }
         })
 
