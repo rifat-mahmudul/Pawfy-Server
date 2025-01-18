@@ -50,7 +50,8 @@ async function run() {
 
         const userCollection = client.db('Pawfy').collection('users');
         const petsCollection = client.db('Pawfy').collection('pets');
-        const donateCampaignCollection = client.db('Pawfy').collection('donationCampaign')
+        const donateCampaignCollection = client.db('Pawfy').collection('donationCampaign');
+        const adoptCollection = client.db('Pawfy').collection('adoptionRequest')
 
         //create jwt token for uer
         app.post('/jwt',(req, res) => {
@@ -212,6 +213,18 @@ async function run() {
             } catch (error) {
                 console.log(`error from delete pet : ${error}`);
                 res.status(500).send(`error from delete pet : ${error}`)
+            }
+        })
+
+        //request adopt data
+        app.post('/adopt-request', async(req, res) => {
+            try {
+                const adoptData = req.body;
+                const result = await adoptCollection.insertOne(adoptData);
+                res.send(result);
+            } catch (error) {
+                console.log(`Error from request adopt data : ${error}`);
+                res.status(500).send(`Error from request adopt data : ${error}`)
             }
         })
 
