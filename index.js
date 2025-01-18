@@ -125,6 +125,17 @@ async function run() {
             }
         })
 
+        //get all pets
+        app.get('/pets', async(req, res) => {
+            try {
+                const result = await petsCollection.find().toArray();
+                res.send(result);
+            } catch (error) {
+                console.log(`error from get all pets : ${error}`);
+                res.status(500).send(`error from get all pets : ${error}`)
+            }
+        })
+
         //get single pet by id
         app.get('/pet/:id', async(req, res) => {
             try {
@@ -158,7 +169,7 @@ async function run() {
         })
 
         //update adopt data
-        app.patch('/pets/adopt/:id', async(req, res) => {
+        app.patch('/pets/adopt/:id', verifyToken, async(req, res) => {
             const petData = req.body;
             const id = req.params.id;
             const query = {_id : new ObjectId(id)};
@@ -177,7 +188,7 @@ async function run() {
         })
 
         //delete pet by id
-        app.delete('/pet/:id', async(req, res) => {
+        app.delete('/pet/:id', verifyToken, async(req, res) => {
             try {
                 const id = req.params.id;
                 const query = {_id : new ObjectId(id)};
