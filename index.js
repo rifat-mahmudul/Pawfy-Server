@@ -228,6 +228,19 @@ async function run() {
             }
         })
 
+        //get specific adopt request data by user email
+        app.get('/adopt-request/:email', async(req, res) => {
+            try {
+                const email = req.params.email;
+                const query = {petOwner : email};
+                const result = await adoptCollection.find(query).toArray();
+                res.send(result)
+            } catch (error) {
+                console.log(`error from get specific adopt request data by user email : ${error}`);
+                res.status(500).send(`error from get specific adopt request data by user email : ${error}`)
+            }
+        })
+
         //create donatio on DB
         app.post('/donation', verifyToken, async(req, res) => {
             try {
