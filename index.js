@@ -78,6 +78,17 @@ async function run() {
             .send({result : true});
         })
 
+        //verifyAdmin
+        const verifyAdmin = async (req, res, next) => {
+            const user = req.user;
+            const query = {email : user?.email};
+            const result = await userCollection.findOne(query);
+            if(!result || result?.role !== "admin"){
+                return res.status(401).send({ message: 'unauthorized access!!' })
+            }
+            next();
+        }
+
         //save user data in DB
         app.post('/users', async (req, res) => {
             const user = req.body;
@@ -91,6 +102,17 @@ async function run() {
                 Timestamp : Date.now()
             });
             res.send(result);
+        })
+
+        //get all user data for admin 
+        app.get('/users', verifyToken, verifyAdmin, async(req, res) => {
+            try {
+                const result = await userCollection.find().toArray();
+                res.send(result);
+            } catch (error) {
+                console.log(`error from get all user data for admin  : ${error}`);
+                res.status(500).send({message : `get all user data for admin  : ${error}`})
+            }
         })
 
         //get user data by email
