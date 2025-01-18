@@ -127,8 +127,23 @@ async function run() {
 
         //get all pets
         app.get('/pets', async(req, res) => {
+
+            const {search, category} = req.query;
+            let filterOption = {};
+
+            if(search){
+                filterOption.petName = { $regex: search, $options: "i" };
+            }
+
+            if(category) {
+                filterOption.category = category;
+            }
+
             try {
-                const result = await petsCollection.find().toArray();
+                const result = 
+                await petsCollection
+                .find(filterOption)
+                .toArray();
                 res.send(result);
             } catch (error) {
                 console.log(`error from get all pets : ${error}`);
