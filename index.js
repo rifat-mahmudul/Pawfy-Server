@@ -115,6 +115,26 @@ async function run() {
             }
         })
 
+        //update user data (Make admin)
+        app.patch('/user/admin/:id', verifyToken, verifyAdmin, async(req, res) => {
+            const id = req.params.id;
+            const userData = req.body;
+            const query = {_id : new ObjectId(id)};
+            const updateDoc = {
+                $set : {
+                    ...userData
+                }
+            }
+
+            try {
+                const result = await userCollection.updateOne(query, updateDoc);
+                res.send(result);
+            } catch (error) {
+                console.log(`error from update user data  : ${error}`);
+                res.status(500).send({message : `error from update user data  : ${error}`})
+            }
+        })
+
         //get user data by email
         app.get('/user/:email', async(req, res) => {
             const email = req.params.email;
