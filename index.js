@@ -334,6 +334,19 @@ async function run() {
             }
         })
 
+        //get specific donation campaign data by id
+        app.get('/campaign/:id', async(req, res) => {
+            try {
+                const id = req.params.id;
+                const query = {_id : new ObjectId(id)};
+                const result = await donateCampaignCollection.findOne(query);
+                res.send(result);
+            } catch (error) {
+                console.log(`error from get specific donation campaign data by id ${error}`);
+                res.status(500).send({message : `error from get specific donation campaign data by id ${error}`})
+            }
+        })
+
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
