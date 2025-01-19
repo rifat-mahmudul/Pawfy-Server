@@ -53,6 +53,7 @@ async function run() {
         const petsCollection = client.db('Pawfy').collection('pets');
         const donateCampaignCollection = client.db('Pawfy').collection('donationCampaign');
         const adoptCollection = client.db('Pawfy').collection('adoptionRequest');
+        const donationCollection = client.db('Pawfy').collection('donation')
 
         //create jwt token for uer
         app.post('/jwt',(req, res) => {
@@ -356,6 +357,19 @@ async function run() {
             }
         })
 
+        //get all donationCampaign from DB for specific user
+        app.get('/donationCampaigns/:email', verifyToken, async(req, res) => {
+            try {
+                const email = req.params.email;
+                const query = {userEmail : email};
+                const result = await donateCampaignCollection.find(query).sort({'date' : -1}).toArray()
+                res.send(result);
+            } catch (error) {
+                console.log(`error from get all donationCampaign from DB for specific user ${error}`);
+                res.status(500).send({message : `error from get all donationCampaign from DB for specific user ${error}`})
+            }
+        })
+
         //get specific donation campaign data by id
         app.get('/campaign/:id', async(req, res) => {
             try {
@@ -370,7 +384,7 @@ async function run() {
         })
 
         //update donation info on DB
-        app.patch('/donation/:id', async(req, res) => {
+        app.patch('/donationCampaign/:id', verifyToken, async(req, res) => {
             try {
                 const id = req.params.id;
                 const query = {_id : new ObjectId(id)};
@@ -385,6 +399,18 @@ async function run() {
             } catch (error) {
                 console.log(`error from update donation info on DB ${error}`);
                 res.status(500).send(`error from update donation info on DB ${error}`)
+            }
+        })
+
+        //post donation
+        app.post('/all-donation', verifyToken, async(req, res) => {
+            try {
+                const donationInfo = req.body;
+                const result = await donationCollection.insertOne(donationInfo);
+                res.send(result);
+            } catch (error) {
+                console.log(`error from post donation ${error}`);
+                res.status(500).send(`error from post donation ${error}`)
             }
         })
 
