@@ -303,7 +303,7 @@ async function run() {
             }
         })
 
-        //create donatio on DB
+        //create donation campaign on DB
         app.post('/donation', verifyToken, async(req, res) => {
             try {
                 const donateData = req.body;
@@ -312,6 +312,25 @@ async function run() {
             } catch (error) {
                 console.log(`error from create donate data ${error}`);
                 res.status(500).send({message : `error from create donate data ${error}`})
+            }
+        })
+
+        //get all donationCampaign from DB
+        app.get('/donationCampaigns', async(req, res) => {
+
+            const {search} = req.query;
+            let filterOption = {};
+
+            if(search){
+                filterOption.petName = { $regex: search, $options: "i" };
+            }
+
+            try {
+                const result = await donateCampaignCollection.find(filterOption).toArray();
+                res.send(result);
+            } catch (error) {
+                console.log(`error from get all donationCampaign from DB ${error}`);
+                res.status(500).send({message : `error from get all donationCampaign from DB ${error}`})
             }
         })
 
