@@ -1,9 +1,10 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
-require('dotenv').config();
+const stripe = require('stripe')(process.env.PAYMENT_SECRET_KAY);
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -88,6 +89,27 @@ async function run() {
             }
             next();
         }
+
+        //create payment intent
+        app.post('/create-payment-intent', verifyToken, async(req, res) => {
+            const {petId, amount} = req.body;
+            const pet = await donateCampaignCollection.findOne({_id : new ObjectId(petId)});
+
+            if(!pet){
+                return res.status(400).send({ message: 'Plant Not Found' })
+            }
+
+            const donateAmount = amount * 100;
+
+            const { client_secret } = await stripe.paymentIntents.create({
+                    amount: donateAmount,
+                    currency: 'usd',
+                    automatic_payment_methods: {
+                    enabled: true,
+                },
+            });
+            res.send({ clientSecret: client_secret });
+        })
 
         //save user data in DB
         app.post('/users', async (req, res) => {
