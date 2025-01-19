@@ -52,7 +52,7 @@ async function run() {
         const userCollection = client.db('Pawfy').collection('users');
         const petsCollection = client.db('Pawfy').collection('pets');
         const donateCampaignCollection = client.db('Pawfy').collection('donationCampaign');
-        const adoptCollection = client.db('Pawfy').collection('adoptionRequest')
+        const adoptCollection = client.db('Pawfy').collection('adoptionRequest');
 
         //create jwt token for uer
         app.post('/jwt',(req, res) => {
@@ -366,6 +366,25 @@ async function run() {
             } catch (error) {
                 console.log(`error from get specific donation campaign data by id ${error}`);
                 res.status(500).send({message : `error from get specific donation campaign data by id ${error}`})
+            }
+        })
+
+        //update donation info on DB
+        app.patch('/donation/:id', async(req, res) => {
+            try {
+                const id = req.params.id;
+                const query = {_id : new ObjectId(id)};
+                const donationInfo = req.body;
+                const updateDoc = {
+                    $set : {
+                        ...donationInfo
+                    }
+                }
+                const result = await donateCampaignCollection.updateOne(query, updateDoc);
+                res.send(result);
+            } catch (error) {
+                console.log(`error from update donation info on DB ${error}`);
+                res.status(500).send(`error from update donation info on DB ${error}`)
             }
         })
 
