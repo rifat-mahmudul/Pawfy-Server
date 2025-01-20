@@ -427,6 +427,19 @@ async function run() {
             }
         })
 
+        //delete donation info
+        app.delete('/donations/:id', async(req, res) => {
+            try {
+                const id = req.params.id;
+                const query = {_id : new ObjectId(id)};
+                const result = await donationCollection.deleteOne(query);
+                res.send(result);
+            } catch (error) {
+                console.log(`error from delete donation info : ${error}`);
+                res.status(500).send(`error from delete donation info : ${error}`)
+            }
+        })
+
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
