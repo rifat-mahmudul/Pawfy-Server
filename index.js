@@ -414,6 +414,19 @@ async function run() {
             }
         })
 
+        //get donation info for specific user
+        app.get('/my-donations/:email', verifyToken, async(req, res) => {
+            try {
+                const email = req.params.email;
+                const query = {"donatorData.donator.email" : email};
+                const result = await donationCollection.find(query).toArray();
+                res.send(result);
+            } catch (error) {
+                console.log(`error from get donation info for specific user : ${error}`);
+                res.status(500).send(`error from get donation info for specific user : ${error}`)
+            }
+        })
+
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
