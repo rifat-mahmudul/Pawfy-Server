@@ -402,6 +402,19 @@ async function run() {
             }
         })
 
+        //delete campaign 
+        app.delete('/campaigns/:id', verifyToken, verifyAdmin, async(req, res) => {
+            try {
+                const id = req.params.id;
+                const query = {_id : new ObjectId(id)};
+                const result = await donateCampaignCollection.deleteOne(query);
+                res.send(result);
+            } catch (error) {
+                console.log(`error from delete campaign  ${error}`);
+                res.status(500).send(`error from delete campaign  ${error}`)
+            }
+        })
+
         //post donation
         app.post('/all-donation', verifyToken, async(req, res) => {
             try {
