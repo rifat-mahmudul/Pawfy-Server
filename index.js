@@ -438,6 +438,17 @@ async function run() {
             }
         })
 
+        //get all donation info
+        app.get('/all-donations', verifyToken, verifyAdmin, async(req, res) => {
+            try {
+                const allDonations = await donationCollection.find().toArray();
+                res.send(allDonations);
+            } catch (error) {
+                console.log(`error from get all donation info ${error}`);
+                res.status(500).send(`error from get all donation info ${error}`); 
+            }
+        })
+
         //get donation info for specific user
         app.get('/my-donations/:email', verifyToken, async(req, res) => {
             try {
