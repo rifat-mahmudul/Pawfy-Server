@@ -1,188 +1,75 @@
-# 🐾 Pawfy - Pet Adoption and Donation Platform
+# 🐾 Pawfy 🐾
 
-**Pawfy** is a MERN-stack web application designed to facilitate pet adoption and enable users to create and contribute to donation campaigns for pets in need. The platform provides a seamless experience for both users and administrators to manage pets, adoption requests, and donation campaigns.
+**Pawfy** is a comprehensive platform designed to connect those who want to give their pets up for adoption with those who want to adopt. It also facilitates donation campaigns for pets in need.
 
----
+## 🐕 Features 🐈
 
-## 🌐 Live URL
+* **User Authentication:** Secure email/password login, with additional support for Google, Facebook, and GitHub authentication.  🔐
+* **Pet Listing:** Browse available pets, filter by category, and view detailed information. 🐶🐱🐰
+* **Adoption Management:** Submit adoption requests, manage requests (for pet owners), and track adoption status.  📝
+* **Donation Campaigns:** Create and manage donation campaigns, track donations, and view donators. 💰
+* **User Dashboard:** Personalized dashboard for users to manage their pets, adoption requests, and donations. 📊
+* **Admin Dashboard:** Administrative features to manage users, pets, and donation campaigns. ⚙️
+* **Infinite Scrolling:** Smooth, seamless browsing of pets and donation campaigns.  ♾️
+* **Responsive Design:** Accessible and visually appealing across all devices (mobile, tablet, desktop). 📱💻
+* **Dark/Light Mode:** Personalized viewing experience. 🌓
 
-Check out the live version here: [Pawfy Live](https://pawfy-693fa.firebaseapp.com)
+## 💻 Technologies Used 🖥️
 
----
+* **Frontend:** React, Shadcn-UI (or similar UI library), Tanstack Table, Formik/React Hook Form, Cloudinary/Imgbb API, WYSIWYG/Markdown Editor (e.g., Tiptap, Slate, React-Quill), React Loading Skeleton, Tanstack Query, React Intersection Observer.
+* **Backend:** Node.js, Express.js, MongoDB, JWT, Stripe, Cookie Parser.
 
-## ✨ Features
+## 🚀 Getting Started 🔨
 
-### 🏠 Homepage
-- **Navbar**:
-  - Website logo for branding.
-  - Navigation links: Home, Pet Listings, Donation Campaigns, Login/Register.
-  - Profile dropdown with options: Dashboard, Logout.
-- **Banner Section**: Dynamic slider or static banner aligned with the website theme.
-- **Pet Categories**: Quick access to categories like Cats, Dogs, Rabbits, and more.
-- **Call to Action**: Inspiring users to adopt pets with compelling visuals and text.
-- **About Us**: A brief introduction about Pawfy’s mission.
-- **Additional Sections**:
-  - **🐕 Success Stories**: Share heartwarming adoption stories.
-  - **🤝 Volunteer Opportunities**: Showcase ways to contribute to pet welfare.
+1. **Clone the repository:** `git clone https://github.com/your-username/Pawfy.git`  📥
+2. **Install dependencies:** `npm install`  📦
+3. **Set up environment variables:** Create a `.env` file and configure your database connection, Stripe API keys, and JWT secret.  ⚙️
+4. **Start the server:** `npm start`  ▶️
 
----
+## 📂 API Endpoints 🗄️
 
-### 🐶 Pet Listing
-- **Grid View**: Displays available pets in a 3-column layout, sorted by the newest first.
-- **Search and Filter**:
-  - Search by pet name.
-  - Filter by pet category.
-- **Pet Cards**:
-  - Pet image, name, age, location, and a "View Details" button.
-- **Infinite Scrolling**: Loads more pets as the user scrolls.
+**Authentication:**
 
----
+* `POST /jwt`: Generate JWT token.
+* `GET /logout`: Clear JWT token.
+* `POST /users`: Save user data.
+* `GET /users`: Get all users (admin only).
+* `PATCH /user/admin/:id`: Update user role (admin only).
+* `GET /user/:email`: Get user data by email.
 
-### 🐾 Pet Details
-- Detailed pet information with an **Adopt Button**.
-- **Adoption Modal**:
-  - Auto-filled fields: User name and email.
-  - Input fields: Phone number, address.
-  - Pet details (programmatically added).
-- **Adoption Request**: Submits request to the database for review.
+**Pets:**
 
----
+* `POST /pets`: Add a pet.
+* `GET /pets/:email`: Get pets for a specific user.
+* `GET /pets`: Get all pets.
+* `GET /pet/:id`: Get single pet by ID.
+* `PATCH /pet/:id`: Update pet data.
+* `PATCH /pets/adopt/:id`: Update pet adoption status.
+* `DELETE /pet/:id`: Delete pet by ID.
 
-### 💰 Donation Campaigns
-- **Grid View**: Shows donation campaigns in a 3-column layout, sorted by the newest first.
-- **Donation Cards**:
-  - Pet name, image, maximum donation amount, donated amount, and a "View Details" button.
-- **Infinite Scrolling**: Dynamically loads more campaigns.
+**Adoption Requests:**
 
----
+* `POST /adopt-request`: Submit adoption request.
+* `GET /adopt-request/:email`: Get adoption requests by user email.
+* `PATCH /adopt-request/:id`: Update adoption request status.
 
-### 🤑 Donation Details
-- **Campaign Information**: Comprehensive details of the donation campaign.
-- **Donate Now**:
-  - Modal with Stripe credit card integration for secure payments.
-- **Recommended Donations**: Highlights three active campaigns for users.
+**Donation Campaigns:**
 
----
+* `POST /donation`: Create a donation campaign.
+* `GET /donationCampaigns`: Get all donation campaigns.
+* `GET /donationCampaigns/:email`: Get donation campaigns for a specific user.
+* `GET /campaign/:id`: Get donation campaign by ID.
+* `PATCH /donationCampaign/:id`: Update donation campaign info.
+* `DELETE /campaigns/:id`: Delete donation campaign (admin only).
 
-### 🔒 Authentication
-- **Email & Password Authentication**:
-  - User-friendly error handling.
-- **Social Login**:
-  - Google and Facebook integration.
-- **User Roles**:
-  - Default role: `user`.
-  - Admins can promote users to `admin`.
+**Donations:**
 
----
+* `POST /create-payment-intent`: Create Stripe payment intent.
+* `POST /all-donation`: Record donation.
+* `GET /my-donations/:email`: Get donation info for a specific user.
+* `DELETE /donations/:id`: Delete donation info.
 
-### 📋 User Dashboard
-- **Dashboard Pages**:
-  | Feature                        | Description                                                                 |
-  |--------------------------------|-----------------------------------------------------------------------------|
-  | Add a Pet                      | Submit details of a pet for adoption.                                       |
-  | My Added Pets                  | View and manage pets added by the user.                                     |
-  | Adoption Requests              | Manage requests for user-added pets.                                        |
-  | Create Donation Campaign       | Add new donation campaigns for pets.                                        |
-  | My Donation Campaigns          | Track progress and manage donation campaigns.                               |
-  | My Donations                   | View and manage personal donation history.                                  |
+## 🤝 Contributing 💡
 
----
+Contributions are welcome! Feel free to open issues or submit pull requests.  🙌
 
-### 🛠️ Admin Dashboard
-Admins have additional privileges:
-- **Users**:
-  - View, promote, or ban users.
-- **All Pets**:
-  - Manage all pets on the platform (update, delete, or mark as adopted).
-- **All Donations**:
-  - Manage all donation campaigns (edit, delete, pause).
-
----
-
-## 🏗️ Tech Stack
-
-| Technology       | Description                                     |
-|-------------------|-------------------------------------------------|
-| **Frontend**      | React, Tailwind CSS, ShadCN-UI, Material-Tailwind |
-| **Backend**       | Node.js, Express.js                            |
-| **Database**      | MongoDB                                        |
-| **Authentication**| Firebase Authentication, JWT                   |
-| **Cloud Storage** | Cloudinary                                     |
-| **Payment**       | Stripe API                                     |
-
----
-
-## 📦 NPM Packages Used
-
-| Package                         | Description                                                   |
-|---------------------------------|---------------------------------------------------------------|
-| `@radix-ui/react-dropdown-menu` | Dropdown components for the profile menu.                    |
-| `@tanstack/react-query`         | Data fetching and state management.                          |
-| `@tanstack/react-table`         | Powerful table utilities.                                    |
-| `axios`                         | HTTP requests handling.                                      |
-| `firebase`                      | Authentication and database operations.                      |
-| `react-hook-form`               | Form handling with validation.                               |
-| `react-loading-skeleton`        | Skeleton loaders for better UX.                             |
-| `react-quill`                   | WYSIWYG editor for detailed descriptions.                    |
-| `react-select`                  | Custom dropdown menus.                                       |
-| `react-hot-toast`               | Notifications for success and error messages.               |
-| `sweetalert2`                   | Modals for confirmations and alerts.                        |
-| `stripe`                        | Payment processing with Stripe.                             |
-
-## 🌟 Key Features Implemented
-
-- **Infinite Scrolling** for Pets and Donations.
-- **Loading Skeletons** for improved user experience.
-- **WYSIWYG Editor** for detailed input fields.
-- **Responsive Design** with **Dark/Light Mode**.
-- **Admin and User Roles** with protected routes.
-
----
-
-## 🚀 Future Enhancements
-
-- **Multilingual Support** to cater to a global audience.
-- **Analytics Dashboards** for admins to monitor platform activity.
-- **Chat Features** for adopters and pet owners to communicate directly.
-
----
-
-## 🛡️ Security
-
-- **JWT Authentication**: Ensures secure access to protected routes.  
-- **Role-based Access Control**: Admin and User roles to manage permissions effectively.  
-- **Firebase Auth**: Secure and scalable authentication for users.  
-
----
-
-## 🎨 Design Philosophy
-
-- **Responsive Design**: Works seamlessly across devices (mobile, tablet, and desktop).  
-- **Dark/Light Mode**: User preference with elegant transitions.  
-- **Skeleton Loaders**: Smooth UX for data loading, eliminating jarring loading spinners.  
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! Follow these steps:
-
-1. **Fork the Repository**.  
-2. Make your changes.  
-3. Submit a **Pull Request**.  
-
----
-
-## 🔧 Installation and Setup
-
-### Prerequisites
-- Node.js
-- MongoDB
-- Firebase Project
-- Stripe API Keys
-
-### Steps
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/rifat-mahmudul/pawfy.git
-   cd pawfy
