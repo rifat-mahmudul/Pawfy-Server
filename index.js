@@ -293,6 +293,17 @@ async function run() {
             }
         })
 
+        //get all adopt request data
+        app.get('/adopt-request', verifyToken, verifyAdmin, async(req, res) => {
+            try {
+                const allData = await adoptCollection.find().toArray();
+                res.send(allData);
+            } catch (error) {
+                console.log(`error from get all adopt request data : ${error}`);
+                res.status(500).send(`error from get all adopt request data : ${error}`)
+            }
+        })
+
         //get specific adopt request data by user email
         app.get('/adopt-request/:email', verifyToken, async(req, res) => {
             try {
